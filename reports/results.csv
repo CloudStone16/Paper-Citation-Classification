@@ -15,3 +15,7 @@ time,model,task,split,macro_f1,weighted_f1,accuracy,notes
 2026-10-02T17:34:56,"Stanford RF (default, deep trees)",yn,test,0.3935,0.3958,0.4052,MiniLM title emb + year + title length + journal code
 2026-10-02T17:35:04,Stanford NN (MLP 256-128),yn,train,0.3685,0.3722,0.4358,MiniLM title emb + year + title length + journal code
 2026-10-02T17:35:04,Stanford NN (MLP 256-128),yn,test,0.3509,0.356,0.4172,MiniLM title emb + year + title length + journal code
+2026-10-02T17:56:28,lgbm (base),orig,cv,0.71,0.7018,0.7032,specter2_title train(fold avg) macroF1=0.8703
+2026-10-02T17:56:28,mlp (base),orig,cv,0.7019,0.6929,0.6943,specter2_title train(fold avg) macroF1=0.7558
+2026-10-02T17:56:28,ordinal (base),orig,cv,0.7206,0.7124,0.7117,specter2_title 
+2026-10-02T17:56:28,stack (base),orig,cv,0.7187,0.7114,0.7107,specter2_title 
