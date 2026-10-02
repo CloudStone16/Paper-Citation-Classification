@@ -23,6 +23,7 @@ from joblib import Parallel, delayed
 from sklearn.base import clone
 from sklearn.kernel_approximation import Nystroem, PolynomialCountSketch, RBFSampler
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC, LinearSVC
 
 from common import (TASK_TARGETS, build_dataset, cv_splits, log_result, make_preprocessor,
@@ -48,7 +49,9 @@ def variant(name, n_features, C, gamma_mult=1.0, class_weight=None):
         return make_pipeline(Nystroem(kernel="poly", degree=2, gamma=gamma, coef0=1,
                                       n_components=N_COMP, random_state=SEED), svc)
     if name == "poly_sketch":
-        return make_pipeline(PolynomialCountSketch(degree=2, n_components=N_COMP, random_state=SEED), svc)
+        # Sketch outputs have very uneven scales; rescale before the linear SVM
+        return make_pipeline(PolynomialCountSketch(degree=2, n_components=N_COMP, random_state=SEED),
+                             StandardScaler(), svc)
     raise ValueError(name)
 
 
