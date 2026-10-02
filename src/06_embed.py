@@ -13,6 +13,7 @@ Models:
   qwen3-0.6b / qwen3-4b               - recent general-purpose embedding models
 """
 import argparse
+import hashlib
 import time
 
 import numpy as np
@@ -82,21 +83,44 @@ def main():
     texts, mask = load_texts(args.text)
     if args.limit:
         texts, mask = texts[:args.limit], mask[:args.limit]
-    todo = [t for t, m in zip(texts, mask) if m]
-    print(f"{args.model} on {args.text}: {len(todo):,} texts, device={DEVICE}")
+    paper_ids = pd.read_parquet(INTERIM / "clean.parquet", columns=["paper_id"]).paper_id.to_numpy()
+
+    # Abstracts arrive gradually during enrichment, so keep a cache keyed by paper_id + text and
+    # only embed abstracts that are new or changed since the last run.
+    cache_path = PROCESSED / f"emb_{args.model}_{args.text}_cache.npz"
+    cache = {}
+    if args.text == "abstract" and cache_path.exists() and not args.limit:
+        c = np.load(cache_path, allow_pickle=True)
+        cache = {(pid, h): v for pid, h, v in zip(c["paper_id"], c["text_hash"], c["vecs"])}
+    keys = [(pid, hashlib.md5(t.encode()).hexdigest()) for pid, t in zip(paper_ids, texts)]
+    todo_idx = [i for i, m in enumerate(mask) if m and keys[i] not in cache]
+    todo = [texts[i] for i in todo_idx]
+    print(f"{args.model} on {args.text}: {int(mask.sum()):,} texts, {len(todo):,} to embed "
+          f"({int(mask.sum()) - len(todo):,} cached), device={DEVICE}")
 
     start = time.time()
-    if args.model == "specter2":
+    if not todo:
+        vecs = np.zeros((0, next(iter(cache.values())).shape[0]), dtype=np.float32)
+    elif args.model == "specter2":
         vecs = embed_specter2(todo, args.batch_size)
     else:
         vecs = embed_sentence_transformers(MODELS[args.model], todo, args.batch_size)
-    secs = time.time() - start
-    print(f"Done in {secs / 60:.1f} min ({len(todo) / secs:.0f} texts/s), dim={vecs.shape[1]}")
+    secs = max(time.time() - start, 1e-9)
+    print(f"Done in {secs / 60:.1f} min ({len(todo) / secs:.0f} texts/s)")
 
-    full = np.zeros((len(texts), vecs.shape[1]), dtype=np.float32)
-    full[mask] = vecs
+    for i, v in zip(todo_idx, vecs):
+        cache[keys[i]] = v
+    dim = next(iter(cache.values())).shape[0] if cache else vecs.shape[1]
+    full = np.zeros((len(texts), dim), dtype=np.float32)
+    for i, m in enumerate(mask):
+        if m:
+            full[i] = cache[keys[i]]
     if args.limit:
         return  # speed test only, nothing saved
+    if args.text == "abstract":
+        ks = [k for k, m in zip(keys, mask) if m]
+        np.savez(cache_path, paper_id=np.array([k[0] for k in ks]), text_hash=np.array([k[1] for k in ks]),
+                 vecs=np.stack([cache[k] for k in ks]).astype(np.float32))
     np.save(PROCESSED / f"emb_{args.model}_{args.text}.npy", full)
     if args.text == "abstract":
         np.save(PROCESSED / f"emb_{args.model}_{args.text}_mask.npy", mask)
