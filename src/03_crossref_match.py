@@ -95,8 +95,10 @@ def crawl(limit=None):
             recs = [json.loads(line) for line in f]
         done = {r["paper_id"] for r in recs if "error" not in r}
     todo = df[~df.paper_id.isin(done)]
+    # Random order: if the crawl is stopped early, the cached part is still a fair sample of all years.
+    todo = todo.sample(frac=1, random_state=0)
     if limit:
-        todo = todo.sample(min(limit, len(todo)), random_state=0)
+        todo = todo.head(limit)
     print(f"Cached: {len(done):,}  To fetch: {len(todo):,}  "
           f"Mode: {'polite' if EMAIL else 'anonymous'} ({RATE_PER_SEC}/s, {WORKERS} workers)")
 
