@@ -29,7 +29,7 @@ from common import (TASK_TARGETS, build_dataset, cv_splits, log_result, make_pre
                     scores)
 from config import ROOT, SEED
 
-N_COMP = 2000
+N_COMP = 1000  # kept modest: each worker holds an n_rows x N_COMP matrix in memory
 SUBSAMPLE = 30_000
 
 
@@ -61,7 +61,7 @@ def run_fold(pre, model, X, y, tr, va, subsample):
     return scores(y[tr], m.predict(Xtr))["macro_f1"], scores(y[va], m.predict(Xva))
 
 
-def cross_validate(X, y, folds, pre, model, subsample=None, n_jobs=5):
+def cross_validate(X, y, folds, pre, model, subsample=None, n_jobs=2):
     res = Parallel(n_jobs=n_jobs)(delayed(run_fold)(pre, model, X, y, tr, va, subsample) for tr, va in folds)
     train_f1 = np.mean([r[0] for r in res])
     val = {k: np.mean([r[1][k] for r in res]) for k in res[0][1]}
@@ -96,6 +96,7 @@ def main():
             row = {"setup": tag, "variant": name, **cfg, "scaler": scaler, "train_f1": round(train_f1, 4),
                    **{f"cv_{k}": round(v, 4) for k, v in val.items()}, "minutes": round(secs / 60, 1)}
             rows.append(row)
+            pd.DataFrame([row]).to_csv(out_csv, mode="a", header=not out_csv.exists(), index=False)
             print(f"  {name:<14} {cfg} {scaler:<8} train={train_f1:.4f} cv_macroF1={val['macro_f1']:.4f} "
                   f"({secs / 60:.1f} min)", flush=True)
 
@@ -129,7 +130,6 @@ def main():
         record(best.variant, {**cfg, "class_weight": "balanced"}, "standard", train_f1, val, time.time() - t)
 
         df = pd.DataFrame(rows)
-        df.to_csv(out_csv, mode="a", header=not out_csv.exists(), index=False)
         top = df[df.variant != "rbf_exact"].sort_values("cv_macro_f1", ascending=False).iloc[0]
         choice = {"variant": top.variant, "scaler": top.scaler,
                   **{k: top[k] for k in ("C", "gamma_mult", "class_weight") if k in top and pd.notna(top[k])}}

@@ -90,7 +90,7 @@ We compared:
 |---|---|
 | Linear | straight boundaries on the features as they are |
 | Exact RBF | curved boundaries based on distance; cost grows with n², so trained on 30k rows |
-| Nyström RBF | approximates the RBF kernel with 2,000 landmark points, so all rows can be used |
+| Nyström RBF | approximates the RBF kernel with 1,000 landmark points, so all rows can be used |
 | Random Fourier features | another RBF approximation, using random cosine features |
 | Polynomial (Nyström) | boundaries built from pairwise feature products |
 | Polynomial sketch | cheap explicit pairwise feature interactions |

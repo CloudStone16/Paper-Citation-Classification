@@ -19,3 +19,7 @@ time,model,task,split,macro_f1,weighted_f1,accuracy,notes
 2026-10-02T17:56:28,mlp (base),orig,cv,0.7019,0.6929,0.6943,specter2_title train(fold avg) macroF1=0.7558
 2026-10-02T17:56:28,ordinal (base),orig,cv,0.7206,0.7124,0.7117,specter2_title 
 2026-10-02T17:56:28,stack (base),orig,cv,0.7187,0.7114,0.7107,specter2_title 
+2026-10-02T18:05:48,lgbm (base),yn,cv,0.434,0.4351,0.4436,specter2_title train(fold avg) macroF1=0.7478
+2026-10-02T18:05:48,mlp (base),yn,cv,0.4291,0.4302,0.4392,specter2_title train(fold avg) macroF1=0.5340
+2026-10-02T18:05:48,ordinal (base),yn,cv,0.4485,0.449,0.4456,specter2_title 
+2026-10-02T18:05:48,stack (base),yn,cv,0.3921,0.3957,0.4535,specter2_title 
