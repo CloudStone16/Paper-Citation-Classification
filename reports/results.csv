@@ -1,0 +1,17 @@
+time,model,task,split,macro_f1,weighted_f1,accuracy,notes
+2026-10-02T17:33:27,year-only majority rule,orig,train,0.6968,0.6893,0.6884,
+2026-10-02T17:33:27,year-only majority rule,orig,test,0.6998,0.6923,0.6914,
+2026-10-02T17:33:28,Stanford NB (MultinomialNB),orig,train,0.3544,0.3737,0.468,MiniLM title emb + year + title length + journal code
+2026-10-02T17:33:28,Stanford NB (MultinomialNB),orig,test,0.3557,0.3749,0.469,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:06,"Stanford RF (default, deep trees)",orig,train,1.0,1.0,1.0,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:06,"Stanford RF (default, deep trees)",orig,test,0.6546,0.6513,0.6625,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:14,Stanford NN (MLP 256-128),orig,train,0.7134,0.706,0.7074,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:14,Stanford NN (MLP 256-128),orig,test,0.7095,0.702,0.7034,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:14,year-only majority rule,yn,train,0.1721,0.1796,0.3479,
+2026-10-02T17:34:14,year-only majority rule,yn,test,0.1731,0.1822,0.3508,
+2026-10-02T17:34:15,Stanford NB (MultinomialNB),yn,train,0.2698,0.2754,0.376,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:15,Stanford NB (MultinomialNB),yn,test,0.275,0.2823,0.3826,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:56,"Stanford RF (default, deep trees)",yn,train,1.0,1.0,1.0,MiniLM title emb + year + title length + journal code
+2026-10-02T17:34:56,"Stanford RF (default, deep trees)",yn,test,0.3935,0.3958,0.4052,MiniLM title emb + year + title length + journal code
+2026-10-02T17:35:04,Stanford NN (MLP 256-128),yn,train,0.3685,0.3722,0.4358,MiniLM title emb + year + title length + journal code
+2026-10-02T17:35:04,Stanford NN (MLP 256-128),yn,test,0.3509,0.356,0.4172,MiniLM title emb + year + title length + journal code
