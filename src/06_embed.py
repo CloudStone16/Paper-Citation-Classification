@@ -13,6 +13,7 @@ Models:
   qwen3-0.6b / qwen3-4b               - recent general-purpose embedding models
 """
 import argparse
+import os
 import hashlib
 import time
 
@@ -28,6 +29,7 @@ MODELS = {
     "qwen3-4b": "Qwen/Qwen3-Embedding-4B",
 }
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
+THROTTLE = float(os.getenv("EMBED_THROTTLE_SEC", "0"))
 
 
 def load_texts(kind):
@@ -67,6 +69,8 @@ def embed_specter2(texts, batch_size):
                         max_length=512, return_tensors="pt").to(DEVICE)
             cls = model(**batch).last_hidden_state[:, 0, :]  # SPECTER2 uses the [CLS] vector
             out[idx] = cls.float().cpu().numpy()
+            if THROTTLE:  # optional pause between batches to keep the GPU (and fan) quieter
+                time.sleep(THROTTLE)
             if (i // batch_size) % 200 == 0:
                 print(f"  {i:,}/{len(texts):,}", flush=True)
     return out

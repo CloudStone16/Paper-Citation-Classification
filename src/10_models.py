@@ -11,6 +11,7 @@ Usage:
   python 10_models.py --feature-set full --emb specter2_title,specter2_abstract --task orig [--final]
 """
 import argparse
+import os
 import importlib.util
 import json
 from itertools import product
@@ -27,7 +28,7 @@ from config import ROOT, SEED
 
 LGB_PARAMS = dict(n_estimators=3000, learning_rate=0.03, num_leaves=63, min_child_samples=100,
                   subsample=0.8, subsample_freq=1, colsample_bytree=0.6, reg_lambda=2.0,
-                  n_jobs=-1, verbose=-1, random_state=SEED)
+                  n_jobs=int(os.getenv("LGBM_THREADS", "-1")), verbose=-1, random_state=SEED)
 
 
 def continuous_target(frame, task):
