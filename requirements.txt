@@ -24,3 +24,4 @@ transformers>=4.51
 sentence-transformers>=3.0
 adapters>=1.0
 peft>=0.12
+tabulate>=0.9
