@@ -111,7 +111,10 @@ def main():
         for name, cfg in grid:
             t = time.time()
             sub = SUBSAMPLE if name == "rbf_exact" else None
-            train_f1, val = cross_validate(X, y, folds, pre, variant(name, n_feat, **cfg), subsample=sub)
+            # PolynomialCountSketch builds large complex FFT arrays (~6 GB per worker): run it alone
+            jobs = 1 if name == "poly_sketch" else 2
+            train_f1, val = cross_validate(X, y, folds, pre, variant(name, n_feat, **cfg), subsample=sub,
+                                           n_jobs=jobs)
             record(name, cfg, "standard", train_f1, val, time.time() - t)
 
         # Best full-data variant (exact RBF is compared separately because it saw only 30k rows)
