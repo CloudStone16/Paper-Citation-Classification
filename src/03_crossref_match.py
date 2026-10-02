@@ -28,7 +28,7 @@ load_dotenv(ROOT / ".env")
 EMAIL = os.getenv("CONTACT_EMAIL", "").strip()
 
 API = "https://api.crossref.org/works"
-FIELDS = "DOI,title,subtitle,container-title,short-container-title,issued,references-count,author,page,type,publisher,funder,score"
+FIELDS = "DOI,title,subtitle,abstract,container-title,short-container-title,issued,references-count,author,page,type,publisher,funder,score"
 CACHE = INTERIM / "crossref_cache.jsonl"
 OUT = INTERIM / "crossref_matches.parquet"
 
@@ -157,7 +157,10 @@ def match():
     cache = {}
     with open(CACHE) as f:
         for line in f:
-            rec = json.loads(line)
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:  # last line may be half-written while the crawl runs
+                continue
             if "error" not in rec:
                 cache[rec["paper_id"]] = rec["items"]
 
@@ -185,6 +188,7 @@ def match():
             "cr_page": it.get("page"),
             "cr_publisher": it.get("publisher"),
             "cr_n_funders": len(it.get("funder") or []),
+            "cr_abstract": it.get("abstract"),  # JATS XML, cleaned later
         })
     out = pd.DataFrame(rows)
     # Two papers must not claim the same DOI; keep the stronger match.

@@ -15,3 +15,6 @@ models/
 # OS / editor
 .DS_Store
 .claude/settings.local.json
+
+# Run logs
+logs/
