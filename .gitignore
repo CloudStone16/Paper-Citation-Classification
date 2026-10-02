@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Secrets (OpenAlex API key, contact email)
+.env
+
+# Data and artifacts (re-created by scripts)
+data/
+models/
+*.npy
+
+# OS / editor
+.DS_Store
+.claude/settings.local.json
