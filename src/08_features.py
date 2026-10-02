@@ -86,9 +86,9 @@ def main():
     abstract = abstract.fillna(feats.cr_abstract.map(strip_markup))
     feats["has_abstract"] = abstract.notna().astype(int)
     feats["abstract_words"] = abstract.str.split().str.len()
-    feats["abstract_flesch"] = abstract.map(lambda a: textstat.flesch_reading_ease(a) if a else np.nan)
+    feats["abstract_flesch"] = abstract.map(lambda a: textstat.flesch_reading_ease(a) if isinstance(a, str) else np.nan)
     feats["abstract_sentence_len"] = abstract.map(
-        lambda a: textstat.avg_sentence_length(a) if a else np.nan)
+        lambda a: textstat.words_per_sentence(a) if isinstance(a, str) else np.nan)
 
     pd.DataFrame({"paper_id": feats.paper_id, "abstract": abstract}).dropna().to_parquet(
         INTERIM / "abstracts.parquet", index=False)
