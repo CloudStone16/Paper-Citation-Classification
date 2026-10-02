@@ -28,3 +28,7 @@ time,model,task,split,macro_f1,weighted_f1,accuracy,notes
 2026-10-02T19:02:32,ordinal (base),orig,cv,0.7234,0.7152,0.7146,qwen3-0.6b_title 
 2026-10-02T19:02:32,svm (base),orig,cv,0.708,0.7006,0.7009,qwen3-0.6b_title 
 2026-10-02T19:02:32,stack (base),orig,cv,0.7224,0.715,0.7158,qwen3-0.6b_title 
+2026-10-02T19:49:18,lgbm (full),orig,cv,0.7085,0.7002,0.7017,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.8726"
+2026-10-02T19:49:18,mlp (full),orig,cv,0.6946,0.6866,0.6872,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.7795"
+2026-10-02T19:49:18,ordinal (full),orig,cv,0.7237,0.7152,0.7147,"qwen3-0.6b_title,specter2_abstract "
+2026-10-02T19:49:18,stack (full),orig,cv,0.721,0.7138,0.713,"qwen3-0.6b_title,specter2_abstract "
