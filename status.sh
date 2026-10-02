@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 echo "Time: $(date '+%H:%M')"
 echo
 echo "Running jobs:"
-for p in "03_crossref_match.py crawl" "enrich_loop.sh" "run_final.sh" "08_features" "06_embed" "09_svm" "10_models"; do
+for p in "03_crossref_match.py crawl" "enrich_loop.sh" "run_final.sh" "notify_when_done.sh" "08_features" "06_embed" "09_svm" "10_models"; do
   pgrep -f "$p" >/dev/null && echo "  [running] $p"
 done
 echo
