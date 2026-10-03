@@ -1,5 +1,7 @@
 ## Results
 
+See [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md) for a plain-language summary and [`docs/METHODS.md`](docs/METHODS.md) for how everything works.
+
 Macro F1 unless noted. `cv` = mean over the 5 training folds; `test` = held-out 15%, used once.
 
 ### Original task (bins <60 / 60-120 / >120)
