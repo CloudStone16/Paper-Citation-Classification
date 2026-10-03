@@ -1,0 +1,81 @@
+# Results summary
+
+All scores are **macro F1** on the held-out test set (15% of papers, used once at the very end),
+unless marked CV (5-fold cross-validation on the training set). Full tables: [`reports/results.md`](../reports/results.md).
+
+## Headline
+
+**Best model: ordinal LightGBM on the full (enriched) feature set**, chosen by its CV score
+(highest CV on both tasks), then evaluated once on the test set.
+
+### Original task (Stanford's bins: <60 / 60–120 / >120)
+
+| Model | Test macro F1 | Test weighted F1 |
+|---|---|---|
+| **Ours: ordinal model, full features** | **0.7313** | **0.7233** |
+| Ours: stacking ensemble, full features | 0.7299 | 0.7226 |
+| Ours: ordinal model, base features (no enrichment) | 0.7268 | 0.7188 |
+| Ours: best SVM (linear), full features | 0.7116 | 0.7039 |
+| Stanford NN, as reported in their paper | 0.7026 (metric not stated) | |
+| Stanford NN, rebuilt by us on the same split | 0.7095 | 0.7020 |
+| Year-only rule (predict the most common bin for the paper's year) | 0.6998 | 0.6923 |
+
+**+0.029 over Stanford's reported 0.7026**, +0.022 over their method rebuilt on our split.
+The gain is modest because the year alone already scores 0.70 on this task: the dataset holds the
+top 20,000 most-cited papers *per year*, so older papers are almost automatically in higher bins.
+
+### Within-year task (bottom / middle / top third of citations within each year)
+
+Year carries no information here, so this measures real predictive skill. Random guessing = 0.333.
+
+| Model | Test macro F1 |
+|---|---|
+| **Ours: ordinal model, full features** | **0.4676** |
+| Ours: ordinal model, base features | 0.4571 |
+| Ours: best SVM (linear), full features | 0.4424 |
+| Stanford-style random forest (rebuilt) | 0.3935 |
+| Stanford-style neural network (rebuilt) | 0.3509 |
+| Year-only rule | 0.1731 |
+
+Here our model is clearly better: **0.468 vs 0.351** for the Stanford-style neural network.
+
+## Overfitting check
+
+| Model | Train | CV | Test | Comment |
+|---|---|---|---|---|
+| Stanford-style RF (rebuilt) | 1.000 | – | 0.655 | memorizes the training set |
+| Ours: ordinal, full | 0.855 | 0.727 | 0.731 | train > test, but CV ≈ test, so the score is reliable |
+| Ours: linear SVM, full | 0.742 | 0.708 | 0.712 | smallest gap of all models |
+
+CV and test agree to within ~0.005 for every model, so the reported test scores are trustworthy.
+
+## What helped (and what did not)
+
+- **Treating the bins as ordered** (predict a citation score, then cut it into bins) was the
+  single best modelling choice: +0.01 to +0.02 over a plain classifier on both tasks.
+- **Encoding journals by their average citation level** (target encoding) instead of an integer code.
+- **Extra OpenAlex features** (abstract, authors, countries, references, field, funding, open access):
+  +0.005 on the original task, +0.011 on the within-year task. Smaller than hoped: within this
+  "top cited papers only" dataset these properties barely differ between papers (every individual
+  feature correlates with within-year rank at |ρ| ≤ 0.06, journal size aside).
+- **SVM kernels**: on these features, curved boundaries did not beat a straight one. Linear,
+  Nyström RBF and Nyström polynomial all scored ≈0.706–0.708 (original task) and ≈0.43–0.44
+  (within-year). Exact RBF overfit (train 0.87–1.00), random Fourier features and the polynomial
+  sketch were worse. Scaler choice (standard / quantile / power) made no difference.
+- **Embedding model**: Qwen3-0.6B vs SPECTER2 for titles changed scores by ~0.003.
+- **Did not help**: a journal × year feature (overfit, −0.01 to −0.02 CV), class weighting,
+  the stacking ensemble on the within-year task (0.42, below its members; noted, not re-tuned
+  after seeing test scores to keep the test set honest).
+
+## Decisions made without asking (overnight, "recommended option")
+
+1. Dropped Qwen3-Embedding-4B (≈8 GB memory, too slow); used Qwen3-0.6B for titles and SPECTER2 for abstracts.
+2. Abstracts embedded with SPECTER2 only (Qwen3-0.6B would have taken ≈3.5 h).
+3. Kept co-published duplicate titles as separate papers but forced each group onto one side of the split.
+4. Dropped the journal × year feature after it lowered CV scores.
+5. Memory limits after the out-of-memory crash: one heavy job at a time, 2 SVM workers, 1,000 kernel components.
+6. Rescaled polynomial-sketch features before the SVM (it was stuck at 0.41 without; still weakest after).
+7. Quieter overnight run (GPU pause between batches, 6 CPU threads) after the fan woke you; finished at 05:51.
+8. Did **not** re-tune any model after seeing test results (the test set was used exactly once).
+9. Chose the headline model by CV score, not test score.
+10. Used MiniLM as a stand-in for Stanford's Universal Sentence Encoder in the baseline rebuild.
