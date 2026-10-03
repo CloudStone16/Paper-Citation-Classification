@@ -137,6 +137,13 @@ def build_dataset(feature_set, embeddings, n_pca=128):
     return X, feats.reset_index(drop=True), spec
 
 
+def log1p_columns(a, idx):
+    """log1p on the given column positions (module-level so fitted pipelines can be saved)."""
+    a = np.array(a, dtype=float, copy=True)
+    a[:, idx] = np.log1p(np.clip(a[:, idx], 0, None))
+    return a
+
+
 def make_preprocessor(spec, scaler="standard"):
     """Column-wise preprocessing; fitted inside each CV fold, so it never sees validation labels."""
     scalers = {
@@ -145,14 +152,8 @@ def make_preprocessor(spec, scaler="standard"):
         "power": PowerTransformer,
     }
     log_idx = [i for i, c in enumerate(spec["numeric"]) if c in LOG_COLS]
-
-    def log1p_some(a):
-        a = np.array(a, dtype=float, copy=True)
-        a[:, log_idx] = np.log1p(np.clip(a[:, log_idx], 0, None))
-        return a
-
     numeric_pipe = make_pipeline(SimpleImputer(strategy="median", add_indicator=True),
-                                 FunctionTransformer(log1p_some), scalers[scaler]())
+                                 FunctionTransformer(log1p_columns, kw_args={"idx": log_idx}), scalers[scaler]())
     parts = [("num", numeric_pipe, spec["numeric"]),
              ("onehot", OneHotEncoder(handle_unknown="ignore", min_frequency=20, sparse_output=False),
               spec["onehot"]),

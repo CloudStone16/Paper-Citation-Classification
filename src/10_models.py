@@ -16,6 +16,7 @@ import importlib.util
 import json
 from itertools import product
 
+import joblib
 import lightgbm as lgb
 import numpy as np
 from sklearn.base import clone
@@ -173,6 +174,13 @@ def main():
     }
     if "svm" in test_out:
         finals["svm"] = (train_out["svm"].argmax(1), test_out["svm"].argmax(1))
+    out_dir = ROOT / "models"
+    out_dir.mkdir(exist_ok=True)
+    bundle_path = out_dir / f"{args.feature_set}_{args.task}.joblib"
+    joblib.dump({"fitted": fitted, "stacker": stacker, "thresholds": thresholds, "spec": spec,
+                 "feature_set": args.feature_set, "emb": args.emb, "task": args.task, "n_pca": args.n_pca},
+                bundle_path, compress=3)
+    print(f"Saved models to {bundle_path}", flush=True)
     for name, (p_train, p_test) in finals.items():
         log_result(f"{name} ({args.feature_set})", args.task, "train", scores(y, p_train), notes=args.emb)
         log_result(f"{name} ({args.feature_set})", args.task, "test", scores(y_all[te], p_test), notes=args.emb)
