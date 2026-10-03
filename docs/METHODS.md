@@ -22,12 +22,8 @@ papers of each year 2007–2013 (140,000 papers), with title, journal, year and 
 **Important property we found.** Because the sample is "top 20,000 *per year*", older papers
 have had more time to collect citations, and the year alone decides most of the bin: no 2007–2010
 paper has fewer than 60 citations, while 95% of 2013 papers do. A rule that only looks at the year
-reaches macro F1 ≈ 0.70 — about the same as Stanford's best model (0.7026).
-
-So we report two tasks:
-- **Original task** – the bins above, to compare with Stanford.
-- **Within-year task** – each year's papers split into bottom / middle / top third by citations.
-  Year gives no information here (guessing = 0.333), so this measures genuine predictive skill.
+reaches macro F1 ≈ 0.70 — about the same as Stanford's best model (0.7026). We therefore report
+this year-only rule as an extra baseline next to Stanford's models.
 
 ## 3. Cleaning (`02_clean.py`)
 
