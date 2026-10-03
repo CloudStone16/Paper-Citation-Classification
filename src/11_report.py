@@ -43,8 +43,8 @@ def svm_table():
             rows.append({"setup": setup, "variant": variant, "params": " ".join(params), "scaler": scaler,
                          "train_f1": train_f1, "cv_macro_f1": cv_f1})
     d = pd.DataFrame(rows)
-    d = d[(d.scaler == "standard") & ~d.params.str.contains("balanced")]
-    d["setup"] = d.setup.str.split("|").map(lambda x: f"{x[0]} features, {x[2]} task")
+    d = d[(d.scaler == "standard") & ~d.params.str.contains("balanced") & d.setup.str.endswith("|orig")]
+    d["setup"] = d.setup.str.split("|").map(lambda x: f"{x[0]} features")
     best = d.sort_values("cv_macro_f1").groupby(["setup", "variant"]).tail(1)
     cv = best.pivot(index="variant", columns="setup", values="cv_macro_f1")
     tr = best.pivot(index="variant", columns="setup", values="train_f1")
@@ -63,8 +63,6 @@ def main():
              "| Reported by Stanford | Train F1 | Test F1 |", "|---|---|---|"]
     parts += [f"| {n} | {a} | {b} |" for n, a, b in STANFORD]
     parts += ["", table(res, "orig").to_markdown(index=False), "",
-              "### Within-year task (bottom / middle / top third of each year; chance = 0.333)", "",
-              table(res, "yn").to_markdown(index=False), "",
               "### SVM kernel / transformation comparison (best CV macro F1 per variant)", "",
               "`rbf_exact` was trained on a 30k subsample (its cost grows with n^2); all others on all training rows.",
               "", svm_table(), ""]

@@ -33,38 +33,15 @@ Macro F1 unless noted. `cv` = mean over the 5 training folds; `test` = held-out 
 | ordinal (base)                    | specter2_title                     | –       | 0.7206 | –      | –                  | –                |
 | stack (base)                      | specter2_title                     | –       | 0.7187 | –      | –                  | –                |
 
-### Within-year task (bottom / middle / top third of each year; chance = 0.333)
-
-| model                             | inputs                             | train   | cv     | test   | test_weighted_f1   | train-test gap   |
-|:----------------------------------|:-----------------------------------|:--------|:-------|:-------|:-------------------|:-----------------|
-| ordinal (full)                    | qwen3-0.6b_title,specter2_abstract | 0.6738  | 0.4596 | 0.4676 | 0.4683             | 0.2062           |
-| ordinal (base)                    | qwen3-0.6b_title                   | 0.6776  | 0.4529 | 0.4571 | 0.4583             | 0.2205           |
-| lgbm (full)                       | qwen3-0.6b_title,specter2_abstract | 0.776   | 0.4419 | 0.4492 | 0.4506             | 0.3268           |
-| svm (full)                        | qwen3-0.6b_title,specter2_abstract | 0.5149  | 0.4383 | 0.4424 | 0.4437             | 0.0725           |
-| lgbm (base)                       | qwen3-0.6b_title                   | 0.707   | 0.4398 | 0.4423 | 0.4441             | 0.2647           |
-| mlp (full)                        | qwen3-0.6b_title,specter2_abstract | 0.5406  | 0.439  | 0.4416 | 0.4426             | 0.099            |
-| svm (base)                        | qwen3-0.6b_title                   | 0.4929  | 0.4337 | 0.4393 | 0.4407             | 0.0536           |
-| mlp (base)                        | qwen3-0.6b_title                   | 0.5152  | 0.4349 | 0.4293 | 0.4323             | 0.0859           |
-| stack (full)                      | qwen3-0.6b_title,specter2_abstract | 0.5813  | 0.4164 | 0.4224 | 0.4266             | 0.1589           |
-| stack (base)                      | qwen3-0.6b_title                   | 0.5484  | 0.4045 | 0.4022 | 0.4073             | 0.1462           |
-| Stanford RF (default, deep trees) | baseline                           | 1.0     | –      | 0.3935 | 0.3958             | 0.6065           |
-| Stanford NN (MLP 256-128)         | baseline                           | 0.3685  | –      | 0.3509 | 0.356              | 0.0176           |
-| Stanford NB (MultinomialNB)       | baseline                           | 0.2698  | –      | 0.275  | 0.2823             | -0.0052          |
-| year-only majority rule           | baseline                           | 0.1721  | –      | 0.1731 | 0.1822             | -0.001           |
-| lgbm (base)                       | specter2_title                     | –       | 0.434  | –      | –                  | –                |
-| mlp (base)                        | specter2_title                     | –       | 0.4291 | –      | –                  | –                |
-| ordinal (base)                    | specter2_title                     | –       | 0.4485 | –      | –                  | –                |
-| stack (base)                      | specter2_title                     | –       | 0.3921 | –      | –                  | –                |
-
 ### SVM kernel / transformation comparison (best CV macro F1 per variant)
 
 `rbf_exact` was trained on a 30k subsample (its cost grows with n^2); all others on all training rows.
 
-| variant       | base features, orig task   | base features, yn task   | full features, orig task   | full features, yn task   |
-|:--------------|:---------------------------|:-------------------------|:---------------------------|:-------------------------|
-| linear        | 0.7079 (train 0.731)       | 0.4245 (train 0.478)     | 0.7076 (train 0.745)       | 0.4333 (train 0.514)     |
-| rbf_exact     | 0.6972 (train 0.872)       | 0.4306 (train 0.794)     | 0.6931 (train 0.885)       | 0.4314 (train 0.792)     |
-| rbf_nystroem  | 0.7063 (train 0.737)       | 0.4303 (train 0.495)     | 0.706 (train 0.748)        | 0.4372 (train 0.522)     |
-| rbf_fourier   | 0.6847 (train 0.719)       | 0.4225 (train 0.487)     | 0.6565 (train 0.705)       | 0.429 (train 0.508)      |
-| poly_nystroem | 0.707 (train 0.737)        | 0.4286 (train 0.494)     | 0.7067 (train 0.75)        | 0.4363 (train 0.524)     |
-| poly_sketch   | 0.409 (train 0.455)        | 0.3741 (train 0.426)     | 0.4122 (train 0.457)       | 0.3849 (train 0.436)     |
+| variant       | base features        | full features        |
+|:--------------|:---------------------|:---------------------|
+| linear        | 0.7079 (train 0.731) | 0.7076 (train 0.745) |
+| rbf_exact     | 0.6972 (train 0.872) | 0.6931 (train 0.885) |
+| rbf_nystroem  | 0.7063 (train 0.737) | 0.706 (train 0.748)  |
+| rbf_fourier   | 0.6847 (train 0.719) | 0.6565 (train 0.705) |
+| poly_nystroem | 0.707 (train 0.737)  | 0.7067 (train 0.75)  |
+| poly_sketch   | 0.409 (train 0.455)  | 0.4122 (train 0.457) |
