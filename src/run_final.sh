@@ -17,13 +17,13 @@ $PY 08_features.py > $LOG/features_final.log 2>&1
 $PY 06_embed.py --model specter2 --text abstract --batch-size 32 > $LOG/embed_abstract_final.log 2>&1
 echo "=== features + abstract embeddings done $(date '+%H:%M')"
 
-for task in orig yn; do
+for task in orig; do
   $PY 09_svm.py --feature-set full --emb $EMB --task $task > $LOG/svm_full_$task.log 2>&1
   echo "=== svm full $task done $(date '+%H:%M')"
 done
 
 # Final test-set evaluation (the only place the test set is used)
-for task in orig yn; do
+for task in orig; do
   $PY 10_models.py --feature-set base --emb qwen3-0.6b_title --task $task --final > $LOG/final_base_$task.log 2>&1
   echo "=== final base $task done $(date '+%H:%M')"
   $PY 10_models.py --feature-set full --emb $EMB --task $task --final > $LOG/final_full_$task.log 2>&1

@@ -4,9 +4,7 @@ Stanford inputs: title embedding + year + title length + journal as an integer c
 They used Google's Universal Sentence Encoder; we use all-MiniLM-L6-v2 as a comparable small
 general-purpose encoder (their report found embedding choice made little difference).
 
-Two tasks:
-  orig  - the paper's bins (<60, 60-120, >120), comparable with their reported F1
-  yn    - within-year thirds (year cannot give the answer away)
+Task: the paper's bins (<60, 60-120, >120), comparable with their reported F1.
 """
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -57,7 +55,7 @@ def run_models(df, target, emb, numeric):
                        notes="MiniLM title emb + year + title length + journal code")
 
 
-TASKS = {"label": "orig", "label_yn": "yn"}
+TASKS = {"label": "orig"}
 
 if __name__ == "__main__":
     df = load_frame()

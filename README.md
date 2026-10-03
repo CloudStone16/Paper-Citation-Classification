@@ -4,37 +4,86 @@ Predict which citation bin (`<60`, `60–120`, `>120`) an academic paper falls i
 Stanford CS229 project in [`docs/26647373.pdf`](docs/26647373.pdf) (best test F1 0.7026, neural network)
 without overfitting.
 
+**Result:** our best model (ordinal LightGBM on enriched features) reaches **test macro F1 0.7313**
+(weighted 0.7233), against Stanford's 0.7026 and a year-only rule's 0.6998. Details below and in
+[`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md).
+
 ## Data
 
 Letchford, Moat & Preis (2015), *The advantage of short paper titles* — ~140,000 papers from 2007–2013
 (the 20,000 most-cited papers per year, citation counts from Scopus, Oct–Nov 2014).
 Zenodo record [4989552](https://zenodo.org/records/4989552), DOI `10.5061/dryad.hg3j0`, licence CC0.
 
-The raw CSV is not committed; `src/01_download.py` fetches it and checks its MD5.
-Each paper is enriched with metadata from Crossref (DOI lookup) and OpenAlex (abstract, authors,
-countries, references, field, funding), using only information available at publication time.
-
-## Pipeline
-
-| Step | Script | Output |
-|---|---|---|
-| Download | `src/01_download.py` | `data/raw/LMP2015.csv` |
-| Clean + label | `src/02_clean.py` | `data/interim/clean.parquet` |
-| Crossref DOI match | `src/03_crossref_match.py` | `data/interim/crossref_cache.jsonl` |
-| OpenAlex enrichment | `src/04_openalex_enrich.py` | `data/interim/openalex.parquet` |
-| Features + split | `src/05_features.py` | `data/processed/` |
-| Embeddings | `src/06_embed.py` | `data/processed/*.npy` |
-| SVM transform comparison | `src/07_svm_transforms.py` | results table |
-| MLP / LightGBM / fine-tune / stacking | `src/08_models.py` | results table |
+Each paper is enriched with metadata from Crossref (DOI lookup by title) and OpenAlex (abstract,
+authors, countries, institutions, references, field, funding, open access), using only information
+available at publication time. The `data/` and `models/` folders are not committed (too large);
+the scripts below recreate them.
 
 ## Setup
 
+Requires **Python 3.12** (3.14 is too new for some ML libraries) and macOS or Linux.
+On Apple Silicon the embeddings run on the GPU (MPS).
+
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # then fill in OPENALEX_API_KEY and CONTACT_EMAIL
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+cp .env.example .env    # then fill in CONTACT_EMAIL and OPENALEX_API_KEY (free key from openalex.org)
 ```
+
+All commands below are run from the project folder.
+
+## Quick demo (uses the saved model)
+
+Requires `models/full_orig.joblib` (created by step 13 below).
+
+```bash
+.venv/bin/python src/predict.py --task orig --n 10            # 10 random test papers: actual vs predicted bin
+.venv/bin/python src/predict.py --task orig --title graphene  # test papers whose title contains a word
+.venv/bin/python src/predict.py --task orig --evaluate        # test scores of all saved models
+```
+
+Each command takes a few seconds; nothing is retrained.
+
+## Running the full pipeline
+
+Each step reads the files written by the previous ones, so run them in order.
+
+| # | Command | What it does | Time |
+|---|---|---|---|
+| 1 | `.venv/bin/python src/01_download.py` | Download the dataset and verify its MD5 | seconds |
+| 2 | `.venv/bin/python src/02_clean.py` | Clean titles/journals, remove duplicates, add bin labels | ~1 min |
+| 3 | `.venv/bin/python src/03_crossref_match.py crawl` | Search each title on Crossref for its DOI (resumable) | ~8–9 h |
+| 4 | `.venv/bin/python src/03_crossref_match.py match` | Accept only close title + journal matches (~96%) | ~1 min |
+| 5 | `.venv/bin/python src/04_openalex_enrich.py` | Fetch publication-time metadata for every DOI (resumable) | ~15 min |
+| 6 | `.venv/bin/python src/05_split.py` | Fixed 85/15 train/test split + 5 CV folds (stratified, grouped) | seconds |
+| 7 | `.venv/bin/python src/06_embed.py --model minilm --text title` | Title embeddings for the Stanford baseline | ~1 min |
+| 8 | `.venv/bin/python src/06_embed.py --model qwen3-0.6b --text title` | Title embeddings for our models | ~20 min |
+| 9 | `.venv/bin/python src/07_baseline.py` | Rebuild Stanford's NB / RF / NN and the year-only rule | ~2 min |
+| 10 | `.venv/bin/python src/08_features.py` | Build the full feature table and extract abstracts | ~3 min |
+| 11 | `.venv/bin/python src/06_embed.py --model specter2 --text abstract` | Abstract embeddings | ~25 min |
+| 12 | `.venv/bin/python src/09_svm.py --feature-set full --emb qwen3-0.6b_title,specter2_abstract --task orig` | Compare 6 SVM kernels / transformations on CV; save the best setting | ~45–60 min |
+| 13 | `.venv/bin/python src/10_models.py --feature-set full --emb qwen3-0.6b_title,specter2_abstract --task orig --final` | Train SVM, LightGBM, ordinal, MLP, stacking; evaluate once on test; save `models/full_orig.joblib` | ~15 min |
+| 14 | `.venv/bin/python src/11_report.py` | Rebuild the results tables in this README and `reports/results.md` | seconds |
+
+Use `--feature-set base --emb qwen3-0.6b_title` in steps 12–13 for the comparison without enrichment.
+
+Helpers:
+- `src/enrich_loop.sh` – repeats steps 4–5 every 30 min while the crawl runs, stops when enrichment is complete.
+- `src/run_final.sh` – runs steps 10–14 in one go once enrichment is complete.
+- `./status.sh` – shows which pipeline jobs are running and their progress.
+
+Notes: one heavy job at a time on a 24 GB machine. LightGBM uses 6 threads by default
+(`LGBM_THREADS`), which reproduces the reported results exactly; other thread counts can shift
+LightGBM-based scores by about ±0.002.
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `src/` | Pipeline scripts (numbered in run order), `common.py` / `config.py` shared helpers, `predict.py` demo |
+| `reports/` | `results.csv` (every score logged), `results.md`, `svm_cv.csv`, chosen SVM settings, cleaning report |
+| `docs/` | Stanford reference paper, `METHODS.md` (how it works), `RESULTS_SUMMARY.md` (findings) |
+| `data/`, `models/` | Created by the pipeline, not committed |
 
 ## Results
 
