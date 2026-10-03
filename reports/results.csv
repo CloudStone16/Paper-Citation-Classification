@@ -32,3 +32,63 @@ time,model,task,split,macro_f1,weighted_f1,accuracy,notes
 2026-10-02T19:49:18,mlp (full),orig,cv,0.6946,0.6866,0.6872,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.7795"
 2026-10-02T19:49:18,ordinal (full),orig,cv,0.7237,0.7152,0.7147,"qwen3-0.6b_title,specter2_abstract "
 2026-10-02T19:49:18,stack (full),orig,cv,0.721,0.7138,0.713,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:16:59,lgbm (base),orig,cv,0.712,0.7038,0.7053,qwen3-0.6b_title train(fold avg) macroF1=0.8862
+2026-10-03T05:16:59,mlp (base),orig,cv,0.7038,0.696,0.6963,qwen3-0.6b_title train(fold avg) macroF1=0.7716
+2026-10-03T05:16:59,ordinal (base),orig,cv,0.7235,0.7153,0.7147,qwen3-0.6b_title 
+2026-10-03T05:16:59,svm (base),orig,cv,0.708,0.7006,0.7009,qwen3-0.6b_title 
+2026-10-03T05:16:59,stack (base),orig,cv,0.7223,0.7149,0.7157,qwen3-0.6b_title 
+2026-10-03T05:18:10,lgbm (base),orig,train,0.8585,0.8541,0.8555,qwen3-0.6b_title
+2026-10-03T05:18:10,lgbm (base),orig,test,0.7159,0.7078,0.7094,qwen3-0.6b_title
+2026-10-03T05:18:10,mlp (base),orig,train,0.7465,0.7384,0.7397,qwen3-0.6b_title
+2026-10-03T05:18:10,mlp (base),orig,test,0.7084,0.6993,0.7007,qwen3-0.6b_title
+2026-10-03T05:18:10,ordinal (base),orig,train,0.8446,0.84,0.8401,qwen3-0.6b_title
+2026-10-03T05:18:10,ordinal (base),orig,test,0.7268,0.7188,0.7183,qwen3-0.6b_title
+2026-10-03T05:18:10,stack (base),orig,train,0.8027,0.7973,0.7978,qwen3-0.6b_title
+2026-10-03T05:18:10,stack (base),orig,test,0.7272,0.7197,0.7207,qwen3-0.6b_title
+2026-10-03T05:18:10,svm (base),orig,train,0.7291,0.7224,0.7226,qwen3-0.6b_title
+2026-10-03T05:18:10,svm (base),orig,test,0.7115,0.7043,0.7048,qwen3-0.6b_title
+2026-10-03T05:29:43,lgbm (full),orig,cv,0.7112,0.7029,0.7043,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.9035"
+2026-10-03T05:29:43,mlp (full),orig,cv,0.7009,0.6921,0.6934,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.7790"
+2026-10-03T05:29:43,ordinal (full),orig,cv,0.7273,0.7192,0.7186,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:29:43,svm (full),orig,cv,0.7076,0.6997,0.7008,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:29:43,stack (full),orig,cv,0.7267,0.7191,0.7202,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:32:42,lgbm (full),orig,train,0.9198,0.9172,0.9176,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,lgbm (full),orig,test,0.7161,0.708,0.7095,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,mlp (full),orig,train,0.7608,0.7545,0.7533,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,mlp (full),orig,test,0.7024,0.6948,0.6933,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,ordinal (full),orig,train,0.8546,0.8503,0.8504,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,ordinal (full),orig,test,0.7313,0.7233,0.7227,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,stack (full),orig,train,0.8062,0.801,0.8018,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,stack (full),orig,test,0.7299,0.7226,0.7241,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,svm (full),orig,train,0.7419,0.7352,0.736,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:32:42,svm (full),orig,test,0.7116,0.7039,0.7049,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:39:04,lgbm (base),yn,cv,0.4398,0.4409,0.4488,qwen3-0.6b_title train(fold avg) macroF1=0.7541
+2026-10-03T05:39:04,mlp (base),yn,cv,0.4349,0.436,0.4434,qwen3-0.6b_title train(fold avg) macroF1=0.5408
+2026-10-03T05:39:04,ordinal (base),yn,cv,0.4529,0.4535,0.4507,qwen3-0.6b_title 
+2026-10-03T05:39:04,svm (base),yn,cv,0.4337,0.4345,0.442,qwen3-0.6b_title 
+2026-10-03T05:39:04,stack (base),yn,cv,0.4045,0.4078,0.4593,qwen3-0.6b_title 
+2026-10-03T05:40:28,lgbm (base),yn,train,0.707,0.7076,0.7088,qwen3-0.6b_title
+2026-10-03T05:40:28,lgbm (base),yn,test,0.4423,0.4441,0.4524,qwen3-0.6b_title
+2026-10-03T05:40:28,mlp (base),yn,train,0.5152,0.517,0.5337,qwen3-0.6b_title
+2026-10-03T05:40:28,mlp (base),yn,test,0.4293,0.4323,0.4519,qwen3-0.6b_title
+2026-10-03T05:40:28,ordinal (base),yn,train,0.6776,0.6797,0.686,qwen3-0.6b_title
+2026-10-03T05:40:28,ordinal (base),yn,test,0.4571,0.4583,0.4555,qwen3-0.6b_title
+2026-10-03T05:40:28,stack (base),yn,train,0.5484,0.5517,0.6165,qwen3-0.6b_title
+2026-10-03T05:40:28,stack (base),yn,test,0.4022,0.4073,0.4641,qwen3-0.6b_title
+2026-10-03T05:40:28,svm (base),yn,train,0.4929,0.4938,0.5008,qwen3-0.6b_title
+2026-10-03T05:40:28,svm (base),yn,test,0.4393,0.4407,0.4481,qwen3-0.6b_title
+2026-10-03T05:49:24,lgbm (full),yn,cv,0.4419,0.4428,0.4493,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.7444"
+2026-10-03T05:49:24,mlp (full),yn,cv,0.439,0.4396,0.4414,"qwen3-0.6b_title,specter2_abstract train(fold avg) macroF1=0.5781"
+2026-10-03T05:49:24,ordinal (full),yn,cv,0.4596,0.4598,0.4566,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:49:24,svm (full),yn,cv,0.4383,0.4389,0.4457,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:49:24,stack (full),yn,cv,0.4164,0.4195,0.4657,"qwen3-0.6b_title,specter2_abstract "
+2026-10-03T05:51:46,lgbm (full),yn,train,0.776,0.7763,0.7768,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,lgbm (full),yn,test,0.4492,0.4506,0.4569,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,mlp (full),yn,train,0.5406,0.5412,0.5469,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,mlp (full),yn,test,0.4416,0.4426,0.4499,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,ordinal (full),yn,train,0.6738,0.6756,0.6773,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,ordinal (full),yn,test,0.4676,0.4683,0.4649,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,stack (full),yn,train,0.5813,0.584,0.6308,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,stack (full),yn,test,0.4224,0.4266,0.4675,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,svm (full),yn,train,0.5149,0.5158,0.5219,"qwen3-0.6b_title,specter2_abstract"
+2026-10-03T05:51:46,svm (full),yn,test,0.4424,0.4437,0.4511,"qwen3-0.6b_title,specter2_abstract"

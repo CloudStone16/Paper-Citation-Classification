@@ -1,0 +1,7 @@
+{
+  "variant": "rbf_nystroem",
+  "scaler": "standard",
+  "C": 1.0,
+  "gamma_mult": 0.5,
+  "class_weight": "balanced"
+}
