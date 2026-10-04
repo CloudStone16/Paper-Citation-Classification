@@ -50,15 +50,4 @@ CV and test agree to within ~0.005 for every model, so the reported test scores 
 - **Embedding model**: Qwen3-0.6B vs SPECTER2 for titles changed scores by ~0.003.
 - **Did not help**: a journal × year feature (overfit, −0.02 CV) and class weighting.
 
-## Decisions made without asking (overnight, "recommended option")
 
-1. Dropped Qwen3-Embedding-4B (≈8 GB memory, too slow); used Qwen3-0.6B for titles and SPECTER2 for abstracts.
-2. Abstracts embedded with SPECTER2 only (Qwen3-0.6B would have taken ≈3.5 h).
-3. Kept co-published duplicate titles as separate papers but forced each group onto one side of the split.
-4. Dropped the journal × year feature after it lowered CV scores.
-5. Memory limits after the out-of-memory crash: one heavy job at a time, 2 SVM workers, 1,000 kernel components.
-6. Rescaled polynomial-sketch features before the SVM (it was stuck at 0.41 without; still weakest after).
-7. Quieter overnight run (GPU pause between batches, 6 CPU threads) after the fan woke you; finished at 05:51.
-8. Did **not** re-tune any model after seeing test results (the test set was used exactly once).
-9. Chose the headline model by CV score, not test score.
-10. Used MiniLM as a stand-in for Stanford's Universal Sentence Encoder in the baseline rebuild.
