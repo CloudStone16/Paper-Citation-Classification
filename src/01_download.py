@@ -1,4 +1,4 @@
-"""Download the Letchford et al. (2015) dataset and verify its checksum."""
+#Download the Letchford et al. (2015) dataset and verify its checksum.
 import hashlib
 import pandas as pd
 import requests
