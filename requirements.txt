@@ -25,3 +25,7 @@ sentence-transformers>=3.0
 adapters>=1.0
 peft>=0.12
 tabulate>=0.9
+
+# Write-up PDF
+reportlab>=4.0
+pypdf>=4.0

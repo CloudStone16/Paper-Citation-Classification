@@ -1,0 +1,28 @@
+model,actual,predicted,count,share_of_actual
+Year-only rule,<60,<60,5164,0.8302
+Year-only rule,<60,60-120,1056,0.1698
+Year-only rule,<60,>120,0,0.0
+Year-only rule,60-120,<60,671,0.0814
+Year-only rule,60-120,60-120,5467,0.6629
+Year-only rule,60-120,>120,2109,0.2557
+Year-only rule,>120,<60,179,0.0274
+Year-only rule,>120,60-120,2464,0.3773
+Year-only rule,>120,>120,3887,0.5953
+Stanford-style NN (rebuilt),<60,<60,5396,0.8675
+Stanford-style NN (rebuilt),<60,60-120,823,0.1323
+Stanford-style NN (rebuilt),<60,>120,1,0.0002
+Stanford-style NN (rebuilt),60-120,<60,878,0.1065
+Stanford-style NN (rebuilt),60-120,60-120,5436,0.6591
+Stanford-style NN (rebuilt),60-120,>120,1933,0.2344
+Stanford-style NN (rebuilt),>120,<60,202,0.0309
+Stanford-style NN (rebuilt),>120,60-120,2390,0.366
+Stanford-style NN (rebuilt),>120,>120,3938,0.6031
+"Ours: ordinal LightGBM, full features",<60,<60,5278,0.8486
+"Ours: ordinal LightGBM, full features",<60,60-120,936,0.1505
+"Ours: ordinal LightGBM, full features",<60,>120,6,0.001
+"Ours: ordinal LightGBM, full features",60-120,<60,742,0.09
+"Ours: ordinal LightGBM, full features",60-120,60-120,5476,0.664
+"Ours: ordinal LightGBM, full features",60-120,>120,2029,0.246
+"Ours: ordinal LightGBM, full features",>120,<60,87,0.0133
+"Ours: ordinal LightGBM, full features",>120,60-120,2022,0.3096
+"Ours: ordinal LightGBM, full features",>120,>120,4421,0.677

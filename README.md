@@ -64,6 +64,8 @@ Each step reads the files written by the previous ones, so run them in order.
 | 12 | `.venv/bin/python src/09_svm.py --feature-set full --emb qwen3-0.6b_title,specter2_abstract --task orig` | Compare 6 SVM kernels / transformations on CV; save the best setting | ~45–60 min |
 | 13 | `.venv/bin/python src/10_models.py --feature-set full --emb qwen3-0.6b_title,specter2_abstract --task orig --final` | Train SVM, LightGBM, ordinal, MLP, stacking; evaluate once on test; save `models/full_orig.joblib` | ~15 min |
 | 14 | `.venv/bin/python src/11_report.py` | Rebuild the results tables in this README and `reports/results.md` | seconds |
+| 15 | `.venv/bin/python src/12_confusion.py` | Test-set confusion matrices (`reports/confusion_matrices.png`) | ~2 min |
+| 16 | `.venv/bin/python docs/writeup/make_writeup.py` | Build the 2-page write-up `docs/Writeup.pdf` | seconds |
 
 Use `--feature-set base --emb qwen3-0.6b_title` in steps 12–13 for the comparison without enrichment.
 
@@ -82,7 +84,7 @@ LightGBM-based scores by about ±0.002.
 |---|---|
 | `src/` | Pipeline scripts (numbered in run order), `common.py` / `config.py` shared helpers, `predict.py` demo |
 | `reports/` | `results.csv` (every score logged), `results.md`, `svm_cv.csv`, chosen SVM settings, cleaning report |
-| `docs/` | Stanford reference paper, `METHODS.md` (how it works), `RESULTS_SUMMARY.md` (findings) |
+| `docs/` | `Writeup.pdf` (2-page write-up), Stanford reference paper, `METHODS.md` (how it works), `RESULTS_SUMMARY.md` (findings) |
 | `data/`, `models/` | Created by the pipeline, not committed |
 
 ## Results
