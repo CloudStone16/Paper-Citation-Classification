@@ -14,7 +14,7 @@ from reportlab.platypus import Image, KeepTogether, Paragraph, SimpleDocTemplate
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "docs" / "Writeup.pdf"
-TEAM = "Anirudh Ramesh and [teammate name]"
+TEAM = "Anirudh Ramesh and Tanmayi Shanbhogue"
 REPO = "github.com/CloudStone16/Paper-Citation-Classification (private)"
 
 ss = getSampleStyleSheet()

@@ -153,7 +153,7 @@ def make_preprocessor(spec, scaler="standard"):
     }
     log_idx = [i for i, c in enumerate(spec["numeric"]) if c in LOG_COLS]
     numeric_pipe = make_pipeline(SimpleImputer(strategy="median", add_indicator=True),
-                                 FunctionTransformer(log1p_columns, kw_args={"idx": log_idx}), scalers[scaler]())
+                                 FunctionTransformer(log1p_columns, kw_args={"idx": log_idx}, feature_names_out="one-to-one"), scalers[scaler]())
     parts = [("num", numeric_pipe, spec["numeric"]),
              ("onehot", OneHotEncoder(handle_unknown="ignore", min_frequency=20, sparse_output=False),
               spec["onehot"]),
