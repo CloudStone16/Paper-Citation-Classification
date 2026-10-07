@@ -1,0 +1,6 @@
+model,fit_seconds,predict_seconds,train_macro_f1,cv_macro_f1,test_macro_f1,test_weighted_f1,test_accuracy,test_log_loss
+Naive Bayes,0.27,0.042,0.6256,0.6177,0.6146,0.6075,0.6269,6.7859
+Logistic Regression,1.61,0.003,0.7434,0.7085,0.7139,0.706,0.7082,0.6062
+SVM (linear),49.95,0.003,0.7419,0.7076,0.7116,0.7039,0.7049,
+LightGBM classifier,63.95,0.96,0.9198,0.7112,0.7161,0.708,0.7095,0.6274
+Ordinal LightGBM,66.1,0.829,0.8546,0.7273,0.7313,0.7233,0.7227,

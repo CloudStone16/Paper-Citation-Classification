@@ -1,0 +1,41 @@
+model,n_train,fit_seconds
+Naive Bayes,2500,0.005
+Logistic Regression,2500,0.015
+SVM (linear),2500,0.34
+LightGBM classifier,2500,1.738
+Ordinal LightGBM,2500,0.688
+SVM (exact RBF kernel),2500,0.448
+Naive Bayes,5000,0.007
+Logistic Regression,5000,0.035
+SVM (linear),5000,0.784
+LightGBM classifier,5000,3.934
+Ordinal LightGBM,5000,1.534
+SVM (exact RBF kernel),5000,1.695
+Naive Bayes,10000,0.021
+Logistic Regression,10000,0.107
+SVM (linear),10000,2.455
+LightGBM classifier,10000,6.882
+Ordinal LightGBM,10000,3.621
+SVM (exact RBF kernel),10000,6.531
+Naive Bayes,20000,0.039
+Logistic Regression,20000,0.184
+SVM (linear),20000,7.513
+LightGBM classifier,20000,9.786
+Ordinal LightGBM,20000,5.318
+SVM (exact RBF kernel),20000,36.5
+Naive Bayes,30000,0.054
+Logistic Regression,30000,0.33
+SVM (linear),30000,13.359
+LightGBM classifier,30000,17.015
+Ordinal LightGBM,30000,10.944
+SVM (exact RBF kernel),30000,99.505
+Naive Bayes,60000,0.128
+Logistic Regression,60000,0.767
+SVM (linear),60000,35.589
+LightGBM classifier,60000,24.434
+Ordinal LightGBM,60000,27.745
+Naive Bayes,118971,0.259
+Logistic Regression,118971,1.754
+SVM (linear),118971,85.871
+LightGBM classifier,118971,45.862
+Ordinal LightGBM,118971,48.759

@@ -1,0 +1,21 @@
+model,class,value
+Ordinal LightGBM,<60,0.936
+Ordinal LightGBM,60-120,0.6807
+Ordinal LightGBM,>120,0.738
+Ordinal LightGBM,macro,0.7849
+LightGBM classifier,<60,0.934
+LightGBM classifier,60-120,0.6663
+LightGBM classifier,>120,0.6868
+LightGBM classifier,macro,0.7624
+SVM (linear),<60,0.9278
+SVM (linear),60-120,0.6589
+SVM (linear),>120,0.6907
+SVM (linear),macro,0.7592
+Logistic Regression,<60,0.9279
+Logistic Regression,60-120,0.6785
+Logistic Regression,>120,0.6869
+Logistic Regression,macro,0.7644
+Naive Bayes,<60,0.7192
+Naive Bayes,60-120,0.5636
+Naive Bayes,>120,0.5643
+Naive Bayes,macro,0.6157

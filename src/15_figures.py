@@ -80,8 +80,8 @@ def fig_dataset():
 
 def fig_confusion(out):
     y = out["y_test"]
-    fig, axes = plt.subplots(1, 5, figsize=(16, 3.4))
-    for ax, name in zip(axes, MODELS):
+    fig, axes = plt.subplots(1, 5, figsize=(16, 3.4), gridspec_kw={"wspace": 0.12})
+    for i_ax, (ax, name) in enumerate(zip(axes, MODELS)):
         cm = confusion_matrix(y, out[f"{key(name)}__pred"], labels=[0, 1, 2])
         share = cm / cm.sum(axis=1, keepdims=True)
         ax.imshow(share, cmap="Blues", vmin=0, vmax=1)
@@ -90,7 +90,7 @@ def fig_confusion(out):
                 ax.text(j, i, f"{share[i, j]:.2f}\n({cm[i, j]:,})", ha="center", va="center", fontsize=7.5,
                         color="white" if share[i, j] > 0.55 else INK)
         ax.set_xticks(range(3), BIN_LABELS)
-        ax.set_yticks(range(3), BIN_LABELS)
+        ax.set_yticks(range(3), BIN_LABELS if i_ax == 0 else [])
         ax.grid(False)
         ax.set_xlabel("Predicted bin")
         ax.set_title(name)
@@ -166,7 +166,8 @@ def fig_calibration(out, metrics):
     ax.set_xlim(0.3, 1.0)
     ax.set_ylim(0.0, 1.02)
     ax2.set_xlabel("Predicted probability of the chosen bin")
-    ax2.set_ylabel("Number of test papers")
+    ax2.set_yscale("log")
+    ax2.set_ylabel("Number of test papers (log scale)")
     ax2.set_title("How confident each model is")
     ax2.legend(loc="upper right", frameon=False)
     fig.suptitle("Probability quality of the probabilistic models (test set)", y=1.02)
@@ -227,7 +228,8 @@ def fig_timing(metrics):
         order = m[col].sort_values()
         ax.barh(order.index, order.values, color=[COLOR[n] for n in order.index], height=0.6)
         for i, v in enumerate(order.values):
-            ax.text(v * 1.15, i, f"{v:,.2f} s" if v < 10 else f"{v:,.0f} s", va="center", fontsize=7.5, color=INK)
+            label = f"{v * 1000:,.0f} ms" if v < 1 else (f"{v:,.1f} s" if v < 10 else f"{v:,.0f} s")
+            ax.text(v * 1.15, i, label, va="center", fontsize=7.5, color=INK)
         ax.set_xscale("log")
         ax.set_xlabel("Seconds (log scale)")
         ax.set_title(title)
@@ -248,13 +250,16 @@ def fig_scaling():
         if d.empty:
             continue
         ax.plot(d.n_train, d.fit_seconds, color=colors[name], ls=dashes[name], marker="o", ms=4.5, label=name)
-        ax.annotate(name, (d.n_train.iloc[-1], d.fit_seconds.iloc[-1]), xytext=(5, 0), textcoords="offset points",
-                    fontsize=7, color=INK, va="center")
+        if "LightGBM" not in name:  # the two LightGBM lines end at the same point; the legend names them
+            ax.annotate(name, (d.n_train.iloc[-1], d.fit_seconds.iloc[-1]), xytext=(5, 0),
+                        textcoords="offset points", fontsize=7, color=INK, va="center")
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlabel("Training papers (log scale)")
     ax.set_ylabel("Training time, seconds (log scale)")
     ax.set_title("How training time grows with data size (exact RBF SVM stopped at 30,000 papers)")
+    ax.text(0.99, 0.02, "Single runs; times vary by roughly ±40% with row order and machine load",
+            transform=ax.transAxes, ha="right", fontsize=7, color=MUTED)
     ax.legend(loc="upper left", frameon=False)
     save(fig, "09_time_scaling.png")
 
@@ -270,7 +275,7 @@ def fig_learning():
         ax.set_xscale("log")
         ax.set_title(name)
         ax.set_xlabel("Training papers (log)")
-        ax.legend(loc="lower right", frameon=False)
+    axes[0].legend(loc="center right", frameon=False)
     axes[0].set_ylabel("Macro F1")
     fig.suptitle("Learning curves: the shaded gap between train and validation is overfitting", y=1.03)
     save(fig, "10_learning_curves.png")
@@ -296,12 +301,22 @@ def feature_group(f):
     return "Other paper metadata"
 
 
+def readable(f):
+    """journal_0 -> 'journal: avg. share <60' (target-encoded columns, one per bin)."""
+    for base in ("first_author_country", "primary_country", "subfield", "topic", "journal"):
+        for k, b in enumerate(BIN_LABELS):
+            if f == f"{base}_{k}":
+                return f"{base.replace('_', ' ')}: avg. share {b}"
+    return f.replace("year_cat_", "year = ").replace("_", " ")
+
+
 def fig_importance():
     imp = pd.read_csv(EXP / "lgbm_feature_importance.csv")
     imp["share"] = imp.gain / imp.gain.sum()
     imp["group"] = imp.feature.map(feature_group)
     fig, (ax, ax2) = plt.subplots(1, 2, figsize=(13, 4.6), gridspec_kw={"width_ratios": [1.3, 1]})
-    top = imp.head(15).iloc[::-1]
+    top = imp.head(15).iloc[::-1].copy()
+    top["feature"] = top.feature.map(readable)
     ax.barh(top.feature, top.share, color="#2a78d6", height=0.65)
     ax.set_xlabel("Share of total split gain")
     ax.set_title("Top 15 features (LightGBM classifier)")
@@ -358,6 +373,7 @@ def fig_ordinal(out):
     bins = np.linspace(np.percentile(s, 0.5), np.percentile(s, 99.5), 70)
     for k in (0, 1, 2):
         ax.hist(s[y == k], bins=bins, histtype="step", lw=2, color=blues[k], label=f"Actual {BIN_LABELS[k]}")
+    ax.set_ylim(0, ax.get_ylim()[1] * 1.18)
     for t, lbl in zip(th, ("<60 | 60-120", "60-120 | >120")):
         ax.axvline(t, color=INK, ls="--", lw=1)
         ax.text(t, ax.get_ylim()[1] * 0.96, f" threshold\n {lbl}", fontsize=7, color=INK, va="top")

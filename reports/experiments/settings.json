@@ -1,0 +1,22 @@
+{
+  "logistic_regression_C": 0.01,
+  "logistic_regression_cv": {
+    "0.01": 0.7085,
+    "0.1": 0.7082,
+    "1.0": 0.7083
+  },
+  "svm": {
+    "variant": "linear",
+    "scaler": "standard",
+    "C": 0.1
+  },
+  "ordinal_thresholds": [
+    4.158048699737608,
+    4.868041175895307
+  ],
+  "preprocessing_seconds": 1.08,
+  "n_features": 410,
+  "n_train": 118971,
+  "n_test": 20997,
+  "lgbm_threads": 6
+}
